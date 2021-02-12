@@ -33,4 +33,10 @@
     I want the score of the game
     In order to see if I get better
 
+  Scenario Start new game
+    When I start a new game
+    Then I should see the first letter of a 5 letter word
+    And My score is 0
+
+
 
