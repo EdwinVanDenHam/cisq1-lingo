@@ -84,6 +84,16 @@ class FeedbackTest {
     }
 
     @Test
+    @DisplayName("feedback length is valid if it's the same as the word length")
+    void feedbackLengthValid(){
+        String guess = "staal";
+        String wordToGuess = "stoel";
+        Feedback feedback = new Feedback(guess, wordToGuess);
+        feedback.setFeedback(List.of(Mark.CORRECT,Mark.CORRECT,Mark.ABSENT,Mark.ABSENT,Mark.CORRECT));
+        assertEquals(List.of(Mark.CORRECT,Mark.CORRECT,Mark.ABSENT,Mark.ABSENT,Mark.CORRECT),feedback.getFeedback());
+    }
+
+    @Test
     @DisplayName("Provide feedback based on the occurrence of the letters")
     void provideFeedback(){
         // arrange
@@ -110,5 +120,4 @@ class FeedbackTest {
         // assert
         assertEquals(List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID), feedback.giveFeedback());
     }
-
 }

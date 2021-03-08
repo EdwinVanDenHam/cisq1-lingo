@@ -42,4 +42,13 @@ class HintTest {
         assertEquals(List.of('r','.','.','.','.'), hint.giveHint(List.of('r','.','.','.','.'),"raden"));
     }
 
+    @Test
+    void provideHintEmpty() {
+        Hint hint = new Hint(List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID));
+        hint.giveHint(List.of(), "staal");
+        hint.giveInitialHint("staal");
+        System.out.println(hint.getHint());
+        assertEquals(List.of('s','.','.','.','.'), hint.getHint());
+    }
+
 }

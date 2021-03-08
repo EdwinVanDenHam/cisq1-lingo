@@ -45,4 +45,19 @@ public class RoundTest {
 
         assertEquals(3, round.getFeedback().size());
     }
+
+    @Test
+    @DisplayName("The word should be guessed if it is the same on the last attempt")
+    void guessWordLastAttempt() {
+        Game game = new Game();
+        game.startRound();
+        game.guessWord("staal");
+        game.guessWord("staal");
+        game.guessWord("staal");
+        game.guessWord("staal");
+
+        game.guessWord("laden");
+
+        assertTrue(game.getLastRound().getLastFeedback().isWordGuessed());
+    }
 }

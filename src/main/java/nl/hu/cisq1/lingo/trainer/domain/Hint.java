@@ -32,7 +32,7 @@ public class Hint {
             hintList.addAll(previousHint);
         } else {
             // Geef de eerste letter van het woord
-            giveInitialHint(wordToGuess);
+            return giveInitialHint(wordToGuess);
         }
         // alle correcte letters op de goede plek zetten
         for (int i = 0; i < marks.size(); i++) {

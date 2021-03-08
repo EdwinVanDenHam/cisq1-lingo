@@ -69,26 +69,5 @@ public class Feedback {
         return feedback;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Feedback feedback = (Feedback) o;
-        return Objects.equals(guess, feedback.guess) &&
-                Objects.equals(feedback, feedback.feedback);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(guess, feedback);
-    }
-
-    @Override
-    public String toString() {
-        return "Feedback{" +
-                "guess='" + guess + '\'' +
-                ", feedback=" + feedback +
-                '}';
-    }
 }
 
