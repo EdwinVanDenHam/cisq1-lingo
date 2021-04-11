@@ -36,16 +36,16 @@ public class GameDTO {
         return roundsWon;
     }
 
-    public List getHints(){
-        List list = new ArrayList();
+    public List<List<Character>> getHints(){
+        List<List<Character>> list = new ArrayList<>();
         for(Hint h : round.getHints()){
             list.add(h.getHint());
         }
         return list;
     }
 
-    public List getFeedback(){
-        List list = new ArrayList<>();
+    public List<List<Mark>> getFeedback(){
+        List<List<Mark>> list = new ArrayList<>();
         for(Feedback f : round.getFeedback()){
             list.add(f.getFeedback());
         }

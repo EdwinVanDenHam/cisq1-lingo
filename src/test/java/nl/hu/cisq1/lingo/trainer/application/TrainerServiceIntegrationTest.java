@@ -6,14 +6,9 @@ import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,23 +19,6 @@ class TrainerServiceIntegrationTest {
 
     @Autowired
     private TrainerService service;
-
-//    @ParameterizedTest
-//    @DisplayName("Checks if words are valid")
-//    @MethodSource("provideCheckExamples")
-//    void checkWordIsValid(String word, boolean isValid) throws GameNotFoundException {
-//        Game game = service.startNewGame();
-//        assertEquals(isValid, service.checkWordIsValid(word, game.getId()));
-//    }
-//
-//    static Stream<Arguments> provideCheckExamples() {
-//        return Stream.of(
-//                Arguments.of("blijf", true),
-//                Arguments.of("bliqf", false),
-//                Arguments.of("feesten", false),
-//                Arguments.of("feeeeee", false)
-//        );
-//    }
 
     @Test
     @DisplayName("Finds a game based on id")
@@ -63,7 +41,7 @@ class TrainerServiceIntegrationTest {
     void startNewGame() throws GameNotFoundException {
         Game game = service.startNewGame();
         assertEquals(service.findGame(game.getId()).getId(), game.getId());
-        assertEquals(game.getStatus(), GameStatus.ONGOING);
+        assertEquals(GameStatus.ONGOING, game.getStatus());
     }
 
     @Test
@@ -72,7 +50,7 @@ class TrainerServiceIntegrationTest {
         Long id = service.startNewGame().getId();
         String wordToGuess = service.findGame(id).getLastRound().getWordToGuess();
         service.guessWord(wordToGuess, id);
-        assertEquals(service.findGame(id).getRoundsWon(), 1);
+        assertEquals(1, service.findGame(id).getRoundsWon());
         assertEquals(GameStatus.WAITING_FOR_NEW_ROUND, service.findGame(id).getStatus());
     }
 
@@ -81,16 +59,16 @@ class TrainerServiceIntegrationTest {
     void guessWordWrong() throws GameNotFoundException {
         Long id = service.startNewGame().getId();
         service.guessWord("aap", id);
-        assertEquals(service.findGame(id).getRoundsWon(), 0);
+        assertEquals(0, service.findGame(id).getRoundsWon());
         assertEquals( GameStatus.ONGOING, service.findGame(id).getStatus());
-        assertEquals(service.findGame(id).getLastRound().getFeedback().size(), 1);
+        assertEquals(1, service.findGame(id).getLastRound().getFeedback().size());
     }
 
     @Test
     @DisplayName("Starts a new round")
     void startNewRound() throws GameNotFoundException {
         Game game = service.startNewGame();
-        assertEquals(game.getRounds().size(),1);
+        assertEquals(1, game.getRounds().size());
         service.guessWord(game.getLastRound().getWordToGuess(), game.getId());
         service.startNewRound(game.getId());
         assertEquals(1, service.findGame(game.getId()).getRoundsWon());

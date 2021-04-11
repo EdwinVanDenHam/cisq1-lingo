@@ -46,7 +46,7 @@ class TrainerControllerTest {
     void startNewGame() {
         GameStatus result = controller.startNewGame().getStatus();
 
-        assertEquals(result, GameStatus.ONGOING);
+        assertEquals(GameStatus.ONGOING, result);
     }
 
     @Test

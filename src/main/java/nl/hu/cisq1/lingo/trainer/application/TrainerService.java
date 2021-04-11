@@ -23,8 +23,8 @@ public class TrainerService {
     }
 
     public boolean checkWordIsValid(String word, Long id) throws GameNotFoundException {
-        Game game = findGame(id);
-        if(word.length() != game.getLastRound().getWordToGuess().length()){
+        Game newGame = findGame(id);
+        if(word.length() != newGame.getLastRound().getWordToGuess().length()){
             return false;
         }
         return this.wordService.checkWordExists(word);
@@ -36,46 +36,46 @@ public class TrainerService {
     }
 
     public Game startNewGame(){
-        Game game = new Game();
+        Game newGame = new Game();
         String wordToGuess = this.wordService.provideRandomWord(5);
 
-        game.setStatus(GameStatus.ONGOING);
-        game.getRounds().add(new Round());
-        game.getLastRound().provideInitialHint(wordToGuess);
+        newGame.setStatus(GameStatus.ONGOING);
+        newGame.getRounds().add(new Round());
+        newGame.getLastRound().provideInitialHint(wordToGuess);
 
-        this.gameRepository.save(game);
-        this.game = game;
+        this.gameRepository.save(newGame);
+        this.game = newGame;
         return game;
     }
 
     public boolean guessWord(String guess, Long id) throws GameNotFoundException{
-        Game game = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
+        Game newGame = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
         // if the game is lost
-        if(game.getStatus() == GameStatus.GAME_OVER){
+        if(newGame.getStatus() == GameStatus.GAME_OVER){
             throw new GameOverException();
         }
         // if the round is over
-        if(game.getStatus() == GameStatus.WAITING_FOR_NEW_ROUND){
+        if(newGame.getStatus() == GameStatus.WAITING_FOR_NEW_ROUND){
             throw new RoundOverException();
         }
         // if the word does not exist (or does not have the correct length)
          if (!checkWordIsValid(guess, id)) {
-             return game.guessWord(guess, false);
+             return newGame.guessWord(guess, false);
          }
         // if the word exists and has the right length
-        return game.guessWord(guess, true);
+        return newGame.guessWord(guess, true);
     }
 
     public void startNewRound(Long id) throws GameNotFoundException {
-        Game game = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
+        Game newGame = gameRepository.findById(id).orElseThrow(() -> new GameNotFoundException(id));
         // if the game is lost -> throw exception
-        if(game.getStatus() == GameStatus.GAME_OVER) { throw new GameOverException(); }
+        if(newGame.getStatus() == GameStatus.GAME_OVER) { throw new GameOverException(); }
         // if there is an ongoing round -> throw exception
-        if(game.getLastRound().getFeedback().isEmpty() || !game.getLastRound().getLastFeedback().isWordGuessed()) { throw new OngoingRoundException(); }
-        game.setStatus(GameStatus.ONGOING);
-        game.getRounds().add(new Round());
-        game.getLastRound().provideInitialHint(this.wordService.provideRandomWord(
-                game.getNextWordLength(game.getRounds().get(game.getRounds().size() - 2).getWordToGuess())));
-        this.gameRepository.save(game);
+        if(newGame.getLastRound().getFeedback().isEmpty() || !newGame.getLastRound().getLastFeedback().isWordGuessed()) { throw new OngoingRoundException(); }
+        newGame.setStatus(GameStatus.ONGOING);
+        newGame.getRounds().add(new Round());
+        newGame.getLastRound().provideInitialHint(this.wordService.provideRandomWord(
+                newGame.getNextWordLength(newGame.getRounds().get(newGame.getRounds().size() - 2).getWordToGuess())));
+        this.gameRepository.save(newGame);
     }
 }
