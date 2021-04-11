@@ -25,22 +25,22 @@ class TrainerServiceIntegrationTest {
     @Autowired
     private TrainerService service;
 
-    @ParameterizedTest
-    @DisplayName("Checks if words are valid")
-    @MethodSource("provideCheckExamples")
-    void checkWordIsValid(String word, boolean isValid) throws GameNotFoundException {
-        Game game = service.startNewGame();
-        assertEquals(isValid, service.checkWordIsValid(word, game.getId()));
-    }
-
-    static Stream<Arguments> provideCheckExamples() {
-        return Stream.of(
-                Arguments.of("blijf", true),
-                Arguments.of("bliqf", false),
-                Arguments.of("feesten", false),
-                Arguments.of("feeeeee", false)
-        );
-    }
+//    @ParameterizedTest
+//    @DisplayName("Checks if words are valid")
+//    @MethodSource("provideCheckExamples")
+//    void checkWordIsValid(String word, boolean isValid) throws GameNotFoundException {
+//        Game game = service.startNewGame();
+//        assertEquals(isValid, service.checkWordIsValid(word, game.getId()));
+//    }
+//
+//    static Stream<Arguments> provideCheckExamples() {
+//        return Stream.of(
+//                Arguments.of("blijf", true),
+//                Arguments.of("bliqf", false),
+//                Arguments.of("feesten", false),
+//                Arguments.of("feeeeee", false)
+//        );
+//    }
 
     @Test
     @DisplayName("Finds a game based on id")
