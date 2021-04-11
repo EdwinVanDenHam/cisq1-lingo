@@ -14,17 +14,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class HintTest {
 
     @Test
+    @DisplayName("gives the initial hint")
     void giveInitialHint() {
-        Hint hint = new Hint(List.of());
-        assertEquals(List.of('r','.','.','.','.'), hint.giveInitialHint("raden"));
+        Hint hint = new Hint();
+        assertEquals(List.of('r','.','.','.','.'), hint.giveInitialHint("raden", List.of()));
     }
 
     @ParameterizedTest
     @DisplayName("the game should provide and update a hint based on what letters are correct")
     @MethodSource("provideHintExamples")
     void provideHint(List<Character> previousHint, String word, List<Character> newHint){
-        Hint hint = new Hint(List.of(Mark.ABSENT, Mark.PRESENT, Mark.CORRECT, Mark.ABSENT, Mark.CORRECT));
-        assertEquals(newHint, hint.giveHint(previousHint, word));
+        Hint hint = new Hint();
+        assertEquals(newHint, hint.giveHint(previousHint, word, List.of(Mark.ABSENT, Mark.PRESENT, Mark.CORRECT, Mark.ABSENT, Mark.CORRECT)));
     }
 
     static Stream<Arguments> provideHintExamples() {
@@ -37,17 +38,19 @@ class HintTest {
     }
 
     @Test
+    @DisplayName("when feedback is invalid, it should return the previous hint")
     void provideHintInvalid() {
-        Hint hint = new Hint(List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID));
-        assertEquals(List.of('r','.','.','.','.'), hint.giveHint(List.of('r','.','.','.','.'),"raden"));
+        Hint hint = new Hint();
+        assertEquals(List.of('r','.','.','.','.'), hint.giveHint(List.of('r','.','.','.','.'),"raden",
+                     List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID)));
     }
 
     @Test
+    @DisplayName("when feedback is invalid, it should return the previous hint")
     void provideHintEmpty() {
-        Hint hint = new Hint(List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID));
-        hint.giveHint(List.of(), "staal");
-        hint.giveInitialHint("staal");
-        System.out.println(hint.getHint());
+        Hint hint = new Hint();
+        hint.giveHint(List.of(), "staal", List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID));
+        hint.giveInitialHint("staal", List.of(Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID, Mark.INVALID));
         assertEquals(List.of('s','.','.','.','.'), hint.getHint());
     }
 

@@ -1,72 +1,73 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.InvalidFeedbackException;
-
-import java.util.*;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import static nl.hu.cisq1.lingo.trainer.domain.Mark.CORRECT;
 import static nl.hu.cisq1.lingo.trainer.domain.Mark.INVALID;
 
-public class Feedback {
+@Entity
+public class Feedback implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String guess;
     private String wordToGuess;
-    private List<Mark> feedback;
+    @ElementCollection
+    private List<Mark> marks;
 
-    public Feedback(String guess, String wordToGuess) {
-        this.guess = guess;
-        this.wordToGuess = wordToGuess;
+    public Feedback() {
+        this.marks = new ArrayList<>();
     }
 
-    public List<Mark> giveFeedback(){
-        List<Mark> feedbackList = new ArrayList<Mark>();
-        //check lengte en of woord bestaat, indien niet correct -> return invalid
-        if(wordToGuess.length() != guess.length()){
-            for(int i = 0; i < guess.length(); i++){
-                feedbackList.add(Mark.INVALID);
-            }
-            this.feedback = feedbackList;
-            return feedbackList;
-        }
-
-        // elke char van de guessedWord langsgaan
+    public List<Mark> giveFeedback(String guess, String wordToGuess){
+        this.guess = guess;
+        this.wordToGuess = wordToGuess;
+        List<Mark> feedbackList = new ArrayList<>();
+        // for each char in guessed word
         for (int i = 0; i < guess.length(); i++){
-            // als de char voorkomt in het te raden woord:
+            // if char is in the word to guess
             if(wordToGuess.indexOf(guess.charAt(i)) != -1){
-                // als de index hetzelfde is, is het correct
+                // if index is the same -> correct
                 if(wordToGuess.charAt(i) == guess.charAt(i)){
                     feedbackList.add(Mark.CORRECT);
                 }
-                // anders is het present
                 else{
                     feedbackList.add(Mark.PRESENT);
                 }
             }
-            // char komt niet voor -> absent
+            // char not in word to guess -> absent
             else{
                 feedbackList.add(Mark.ABSENT);
             }
         }
-        this.feedback = feedbackList;
+        this.marks = feedbackList;
+        return feedbackList;
+    }
+
+    public List<Mark> giveFeedbackInvalid(String guess, String wordToGuess){
+        this.guess = guess;
+        this.wordToGuess = wordToGuess;
+        List<Mark> feedbackList = new ArrayList<>();
+        for(int i = 0; i < guess.length(); i++){
+            feedbackList.add(Mark.INVALID);
+        }
+        this.marks = feedbackList;
         return feedbackList;
     }
 
     public boolean isWordGuessed(){
-        return feedback.stream().allMatch(mark -> mark == CORRECT);
+        return marks.stream().allMatch(mark -> mark == CORRECT);
     }
 
     public boolean isGuessValid(){
-        return feedback.stream().noneMatch(mark -> mark == INVALID);
-    }
-
-    public void setFeedback(List<Mark> feedback) {
-        if(feedback.size() != wordToGuess.length()){
-            throw new InvalidFeedbackException(guess.length(), wordToGuess.length());
-        }
-        this.feedback = feedback;
+        return marks.stream().noneMatch(mark -> mark == INVALID);
     }
 
     public List<Mark> getFeedback() {
-        return feedback;
+        return marks;
     }
 
 }
